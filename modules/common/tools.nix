@@ -4,7 +4,9 @@
   home.packages = with pkgs; [
     (nerd-fonts.victor-mono)
     # For now just add for zed
+    awscli2
     glow
+    raycast
     railway
     devenv
     graphviz

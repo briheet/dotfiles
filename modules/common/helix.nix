@@ -1,6 +1,12 @@
 { pkgs, lib, ... }:
 
 let
+  # ElixirLS must run on the same Elixir/OTP pair as the projects it indexes.
+  # The default package currently embeds Elixir 1.18, while our work projects
+  # use Elixir 1.19 on OTP 28.
+  elixir = pkgs.beam.packages.erlang_28.elixir_1_19;
+  elixirLs = pkgs.elixir-ls.override { inherit elixir; };
+
   prettierFormatter = parser: {
     command = "prettier";
     args = [
@@ -63,6 +69,10 @@ in
     ocamlPackages.ocaml-lsp
     ocamlformat
     ocamlPackages.earlybird
+
+    # Elixir
+    elixir
+    elixirLs
 
     # Python
     python313
@@ -284,6 +294,17 @@ in
         "--show-stats=false"
         "--issues-exit-code=1"
       ];
+    };
+
+    # ElixirLS may be busy compiling native dependencies on its initial build.
+    # Give navigation requests enough time to complete and avoid dependency
+    # fetching races between the editor and the project's Mix workflow.
+    languages.language-server.elixir-ls = {
+      timeout = 120;
+      config.elixirLS = {
+        dialyzerEnabled = false;
+        fetchDeps = false;
+      };
     };
 
     languages.language-server.zls = {

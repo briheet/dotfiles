@@ -17,7 +17,10 @@
   environment.systemPackages = with pkgs; [
     discord
     ghostty-bin
+    slack
+    dbeaver-bin
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
+    inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
   ];
 
   # System docs
@@ -42,7 +45,8 @@
       allowSignedApp = true;
     };
     computerName = "Briheet's MacBook Pro";
-    hostName = "goryutenmetsu";
+    hostName = "goryutenmetsu.local";
+    localHostName = "goryutenmetsu";
   };
 
   system.stateVersion = 6;
@@ -62,6 +66,13 @@
   # Global programs
   programs = {
     direnv.enable = true;
+  };
+
+  # Display
+  power.sleep = {
+    display = 10;
+    computer = 30;
+    harddisk = "never";
   };
 
   # Systems
