@@ -5,8 +5,8 @@
     (nerd-fonts.victor-mono)
     # For now just add for zed
     awscli2
+    shottr
     glow
-    raycast
     railway
     devenv
     graphviz
@@ -20,7 +20,6 @@
     cargo-flamegraph
     lld
     lldb
-    yazi
     gh
     vim
     git

@@ -4,6 +4,7 @@
   imports = [
     ../../modules/common/nushell.nix
     ../../modules/common/tools.nix
+    ../../modules/common/yazi.nix
     ../../modules/common/helix.nix
     ../../modules/common/tmux.nix
     # ../../modules/common/aerospace.nix
