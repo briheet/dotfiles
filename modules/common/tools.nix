@@ -5,7 +5,6 @@
     (nerd-fonts.victor-mono)
     # For now just add for zed
     awscli2
-    shottr
     glow
     railway
     devenv

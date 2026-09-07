@@ -20,6 +20,7 @@
     slack
     dbeaver-bin
     raycast
+    shottr
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.codex
     inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
   ];
