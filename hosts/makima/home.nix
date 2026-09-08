@@ -1,6 +1,8 @@
 { ... }: {
   imports = [
     ../../modules/common/nushell.nix
+    ../../modules/common/tmux.nix
+    ../../modules/common/yazi.nix
     ../../modules/common/tools.nix
     ../../modules/common/helix.nix
     ../../modules/common/aerospace.nix

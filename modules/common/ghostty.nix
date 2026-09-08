@@ -20,6 +20,10 @@
       clipboard-write = "allow";
 
       # Theme stuff
+      theme = "Nord";
+
+      # Previous custom theme:
+      /*
       background = "#0D0B0D";
       foreground = "#E7E1E6";
       cursor-color = "#F5A9D0";
@@ -45,6 +49,7 @@
         "14=#A9C8CE"
         "15=#F2EDF3"
       ];
+      */
     };
   };
 }
