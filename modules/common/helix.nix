@@ -93,7 +93,7 @@ in
     defaultEditor = true;
 
     settings = {
-      theme = "everforest_dark_transparent";
+      theme = "nord";
       editor = {
         line-number = "relative";
         lsp.display-messages = true;
@@ -104,21 +104,6 @@ in
         };
       };
     };
-
-    themes = {
-      everforest_dark_transparent = {
-        inherits = "everforest_dark";
-
-        "ui.background" = { };
-      };
-    };
-
-    # themes.everforest_dark = {
-    #   inherits = "solarized_dark";
-    #   "ui.background" = { };
-    #   "ui.statusline" = { };
-    #   "ui.gutter" = { };
-    # };
 
     languages.language = [
       {

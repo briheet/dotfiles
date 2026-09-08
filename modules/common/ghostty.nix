@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-{
-
+{pkgs, ...}: {
   programs.ghostty = {
     enable = true;
     package = pkgs.ghostty-bin;
@@ -10,7 +8,7 @@
 
       font-family = "Iosevka Nerd Font";
       font-size = 13;
-      # macos-titlebar-style = "hidden";
+      macos-titlebar-style = "hidden";
       cursor-style-blink = false;
 
       # clipboard stuff

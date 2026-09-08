@@ -1,9 +1,8 @@
-{ ... }:
-
-{
+{...}: {
   imports = [
     ../../modules/common/helix.nix
     ../../modules/common/nushell.nix
+    ../../modules/common/starship.nix
     ../../modules/common/tmux.nix
   ];
 

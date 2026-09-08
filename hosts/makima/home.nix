@@ -1,6 +1,7 @@
-{ ... }: {
+{...}: {
   imports = [
     ../../modules/common/nushell.nix
+    ../../modules/common/starship.nix
     ../../modules/common/tmux.nix
     ../../modules/common/yazi.nix
     ../../modules/common/tools.nix
