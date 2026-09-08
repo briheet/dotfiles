@@ -3,74 +3,41 @@ local helpers = require("helpers")
 local icons = require("icons")
 local settings = require("settings")
 
--- Network is deliberately icon-only. The SSID belongs in a click target, not
--- in the bar's permanent visual hierarchy.
-local network = sbar.add("item", "status.network", {
+-- Right-side items are created from right to left; the clock anchors the edge.
+local clock = sbar.add("item", "status.clock", {
+  -- Keep the date and time clear of the MacBook's centered camera notch.
   position = "right",
-  update_freq = 60,
+  update_freq = 10,
   icon = {
-    string = icons.wifi.connected,
-    color = colors.nord9,
-  },
-  label = { drawing = false },
-})
-
-local function update_network()
-  sbar.exec("ipconfig getifaddr en0", function(address, exit_code)
-    local connected = exit_code == 0 and helpers.trim(address) ~= ""
-    network:set({
-      icon = {
-        string = connected and icons.wifi.connected or icons.wifi.disconnected,
-        color = connected and colors.nord9 or colors.nord11,
-      },
-    })
-  end)
-end
-
-network:subscribe({ "routine", "wifi_change", "system_woke", "forced" }, update_network)
-network:subscribe("mouse.clicked", function()
-  sbar.exec("open 'x-apple.systempreferences:com.apple.wifi-settings-extension'")
-end)
-
-local volume = sbar.add("item", "status.volume", {
-  position = "right",
-  icon = {
-    string = icons.volume.medium,
-    color = colors.nord7,
+    string = "",
+    color = colors.text_muted,
+    font = {
+      family = settings.label_font,
+      style = "Medium",
+      size = 13.0,
+    },
   },
   label = {
-    string = "--",
-    width = 27,
-    align = "right",
-    color = colors.text_muted,
+    string = "--:--",
+    color = colors.text,
+    font = {
+      family = settings.label_font,
+      style = "Bold",
+      size = 13.0,
+    },
   },
 })
 
-local function set_volume(value)
-  local level = tonumber(value) or 0
-  local icon = icons.volume.muted
-  if level >= 60 then
-    icon = icons.volume.high
-  elseif level >= 30 then
-    icon = icons.volume.medium
-  elseif level > 0 then
-    icon = icons.volume.low
-  end
-
-  volume:set({
-    icon = { string = icon },
-    label = { string = tostring(math.floor(level)) },
+local function update_clock()
+  clock:set({
+    icon = { string = os.date("%a, %d %b") },
+    label = { string = os.date("%H:%M") },
   })
 end
 
-volume:subscribe("volume_change", function(env)
-  set_volume(env.INFO)
-end)
-volume:subscribe("forced", function()
-  sbar.exec("osascript -e 'output volume of (get volume settings)'", set_volume)
-end)
-volume:subscribe("mouse.clicked", function()
-  sbar.exec("osascript -e 'set volume output muted not (output muted of (get volume settings))'")
+clock:subscribe({ "routine", "forced", "system_woke" }, update_clock)
+clock:subscribe("mouse.clicked", function()
+  sbar.exec("open -a Calendar")
 end)
 
 local battery = sbar.add("item", "status.battery", {
@@ -82,8 +49,8 @@ local battery = sbar.add("item", "status.battery", {
   },
   label = {
     string = "--%",
-    width = 42,
-    align = "right",
+    width = "dynamic",
+    align = "left",
     color = colors.text_muted,
   },
 })
@@ -130,38 +97,94 @@ battery:subscribe("mouse.clicked", function()
   sbar.exec("open 'x-apple.systempreferences:com.apple.Battery-Settings.extension'")
 end)
 
-local clock = sbar.add("item", "status.clock", {
-  -- Keep the date and time clear of the MacBook's centered camera notch.
+local volume = sbar.add("item", "status.volume", {
   position = "right",
-  update_freq = 10,
   icon = {
-    string = "",
-    color = colors.text_muted,
-    font = {
-      family = settings.label_font,
-      style = "Medium",
-      size = 13.0,
-    },
+    string = icons.volume.medium,
+    color = colors.nord7,
   },
   label = {
-    string = "--:--",
-    color = colors.text,
-    font = {
-      family = settings.label_font,
-      style = "Bold",
-      size = 13.0,
-    },
+    string = "--",
+    width = "dynamic",
+    align = "left",
+    color = colors.text_muted,
   },
 })
 
-local function update_clock()
-  clock:set({
-    icon = { string = os.date("%a, %d %b") },
-    label = { string = os.date("%H:%M") },
+local function set_volume(value)
+  local level = tonumber(value) or 0
+  local icon = icons.volume.muted
+  if level >= 60 then
+    icon = icons.volume.high
+  elseif level >= 30 then
+    icon = icons.volume.medium
+  elseif level > 0 then
+    icon = icons.volume.low
+  end
+
+  volume:set({
+    icon = { string = icon },
+    label = { string = tostring(math.floor(level)) .. "%" },
   })
 end
 
-clock:subscribe({ "routine", "forced", "system_woke" }, update_clock)
-clock:subscribe("mouse.clicked", function()
-  sbar.exec("open -a Calendar")
+volume:subscribe("volume_change", function(env)
+  set_volume(env.INFO)
 end)
+volume:subscribe("forced", function()
+  sbar.exec("osascript -e 'output volume of (get volume settings)'", set_volume)
+end)
+volume:subscribe("mouse.clicked", function()
+  sbar.exec("osascript -e 'set volume output muted not (output muted of (get volume settings))'")
+end)
+
+local network = sbar.add("item", "status.network", {
+  position = "right",
+  update_freq = 60,
+  icon = {
+    string = icons.wifi.connected,
+    color = colors.nord9,
+  },
+  label = { string = "Wi-Fi", drawing = true },
+})
+
+local function update_network()
+  sbar.exec("ipconfig getifaddr en0", function(address, exit_code)
+    local connected = exit_code == 0 and helpers.trim(address) ~= ""
+    network:set({
+      icon = {
+        string = connected and icons.wifi.connected or icons.wifi.disconnected,
+        color = connected and colors.nord9 or colors.nord11,
+      },
+      label = { string = connected and "Wi-Fi" or "Wi-Fi off" },
+    })
+  end)
+end
+
+network:subscribe({ "routine", "wifi_change", "system_woke", "forced" }, update_network)
+network:subscribe("mouse.clicked", function()
+  sbar.exec("open 'x-apple.systempreferences:com.apple.wifi-settings-extension'")
+end)
+
+-- Use the same spacing and baseline for each status icon/value pair.
+for _, item in ipairs({ network, volume, battery }) do
+  item:set({
+    padding_left = 5,
+    padding_right = 5,
+    icon = {
+      font = { family = settings.font, style = "Regular", size = 14.0 },
+      y_offset = 0,
+      padding_left = 5,
+      padding_right = 4,
+      width = "dynamic",
+    },
+    label = {
+      font = { family = settings.label_font, style = "Medium", size = 13.0 },
+      y_offset = 0,
+      padding_left = 3,
+      padding_right = 5,
+      width = "dynamic",
+      align = "left",
+    },
+  })
+end

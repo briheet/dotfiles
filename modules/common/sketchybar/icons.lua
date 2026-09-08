@@ -11,11 +11,11 @@ return {
     muted = "󰖁",
   },
   battery = {
-    full = "󰁹",
-    high = "󰂀",
-    medium = "󰁾",
-    low = "󰁼",
-    empty = "󰁺",
-    charging = "󰂄",
+    full = "",
+    high = "",
+    medium = "",
+    low = "",
+    empty = "",
+    charging = "",
   },
 }
