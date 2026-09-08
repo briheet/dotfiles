@@ -1,5 +1,5 @@
 # This deals with home manager modules between command and darwin specific configs
-{...}: {
+{ ... }: {
   imports = [
     ../../modules/common/nushell.nix
     ../../modules/common/starship.nix
@@ -7,7 +7,7 @@
     ../../modules/common/yazi.nix
     ../../modules/common/helix.nix
     ../../modules/common/tmux.nix
-    # ../../modules/common/aerospace.nix
+    ../../modules/common/aerospace.nix
     ../../modules/common/wallpaper.nix
     ../../modules/common/sketchybar.nix
     ../../modules/common/ghostty.nix

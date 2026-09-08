@@ -3,12 +3,6 @@ local helpers = require("helpers")
 local icons = require("icons")
 local settings = require("settings")
 
-local members = {}
-
-local function add_member(name)
-  table.insert(members, name)
-end
-
 -- Network is deliberately icon-only. The SSID belongs in a click target, not
 -- in the bar's permanent visual hierarchy.
 local network = sbar.add("item", "status.network", {
@@ -20,7 +14,6 @@ local network = sbar.add("item", "status.network", {
   },
   label = { drawing = false },
 })
-add_member("status.network")
 
 local function update_network()
   sbar.exec("ipconfig getifaddr en0", function(address, exit_code)
@@ -52,7 +45,6 @@ local volume = sbar.add("item", "status.volume", {
     color = colors.text_muted,
   },
 })
-add_member("status.volume")
 
 local function set_volume(value)
   local level = tonumber(value) or 0
@@ -90,12 +82,11 @@ local battery = sbar.add("item", "status.battery", {
   },
   label = {
     string = "--%",
-    width = 34,
+    width = 42,
     align = "right",
     color = colors.text_muted,
   },
 })
-add_member("status.battery")
 
 local function update_battery()
   sbar.exec("pmset -g batt", function(info)
@@ -140,32 +131,32 @@ battery:subscribe("mouse.clicked", function()
 end)
 
 local clock = sbar.add("item", "status.clock", {
+  -- Keep the date and time clear of the MacBook's centered camera notch.
   position = "right",
   update_freq = 10,
   icon = {
     string = "",
     color = colors.text_muted,
     font = {
-      family = settings.font,
+      family = settings.label_font,
       style = "Medium",
-      size = 11.0,
+      size = 13.0,
     },
   },
   label = {
     string = "--:--",
     color = colors.text,
     font = {
-      family = settings.font,
+      family = settings.label_font,
       style = "Bold",
-      size = 12.0,
+      size = 13.0,
     },
   },
 })
-add_member("status.clock")
 
 local function update_clock()
   clock:set({
-    icon = { string = os.date("%a %d") },
+    icon = { string = os.date("%a, %d %b") },
     label = { string = os.date("%H:%M") },
   })
 end
@@ -174,14 +165,3 @@ clock:subscribe({ "routine", "forced", "system_woke" }, update_clock)
 clock:subscribe("mouse.clicked", function()
   sbar.exec("open -a Calendar")
 end)
-
-sbar.add("bracket", "status", members, {
-  background = {
-    drawing = true,
-    color = colors.surface,
-    border_color = colors.border,
-    border_width = 1,
-    height = 28,
-    corner_radius = 9,
-  },
-})

@@ -1,13 +1,30 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
-  # SbarLua currently defaults to Lua 5.5 in unstable. Keep this bar on the
-  # mature 5.4 ABI until the upstream 5.5 crash is resolved.
-  sbarLua54 = pkgs.sbarlua.override {
-    lua55Packages = pkgs.lua54Packages;
+  lua = pkgs.lua5_5;
+  # Upstream's makefile embeds its bundled Lua, ignoring Nix's Lua flags.
+  # Link against the interpreter's runtime so both share the same Lua ABI.
+  sbarLua = pkgs.sbarlua.overrideAttrs {
+    buildPhase = ''
+      runHook preBuild
+      mkdir -p bin
+      $CC -std=c99 -O3 -shared -fPIC src/*.c \
+        -I${lua}/include -L${lua}/lib -llua \
+        -framework CoreFoundation -o bin/sketchybar.so
+      runHook postBuild
+    '';
+    installPhase = ''
+      runHook preInstall
+      install -Dm755 bin/sketchybar.so "$out/lib/lua/${lua.luaversion}/sketchybar.so"
+      runHook postInstall
+    '';
   };
 in
 {
+  xdg.configFile."sketchybar/features.lua".text = ''
+    return { aerospace = ${if config.programs.aerospace.enable then "true" else "false"} }
+  '';
+
   programs.sketchybar = {
     enable = true;
     configType = "lua";
@@ -16,8 +33,8 @@ in
       recursive = true;
     };
 
-    luaPackage = pkgs.lua5_4;
-    sbarLuaPackage = sbarLua54;
+    luaPackage = lua;
+    sbarLuaPackage = sbarLua;
     extraPackages = [ pkgs.aerospace ];
   };
 }

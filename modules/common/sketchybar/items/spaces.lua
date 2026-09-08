@@ -1,10 +1,14 @@
 local colors = require("colors")
 local settings = require("settings")
 
+-- Do not show nonfunctional workspace controls on hosts without AeroSpace.
+if not require("features").aerospace then
+  return
+end
+
 sbar.add("event", "aerospace_workspace_change")
 
 local spaces = {}
-local members = {}
 
 local function select_workspace(focused)
   focused = tostring(focused or ""):gsub("%s+", "")
@@ -14,11 +18,7 @@ local function select_workspace(focused)
     sbar.animate("tanh", 12, function()
       item:set({
         label = {
-          color = selected and colors.nord0 or colors.text_muted,
-        },
-        background = {
-          drawing = selected,
-          color = colors.accent,
+          color = selected and colors.accent or colors.text_muted,
         },
       })
     end)
@@ -30,27 +30,27 @@ for index = 1, 9 do
   local name = "space." .. sid
   local item = sbar.add("item", name, {
     position = "left",
-    width = 25,
-    padding_left = 1,
-    padding_right = 1,
+    width = 30,
+    padding_left = 3,
+    padding_right = 3,
     icon = { drawing = false },
     label = {
       string = sid,
       align = "center",
+      width = 30,
       padding_left = 0,
       padding_right = 0,
       font = {
-        family = settings.font,
+        family = settings.label_font,
         style = "Bold",
-        size = 12.0,
+        size = 13.0,
       },
       color = colors.text_muted,
     },
     background = {
-      drawing = false,
-      color = colors.accent,
-      height = 22,
-      corner_radius = 7,
+      color = colors.transparent,
+      height = 26,
+      corner_radius = 6,
     },
   })
 
@@ -59,31 +59,20 @@ for index = 1, 9 do
   end)
 
   spaces[sid] = item
-  table.insert(members, name)
 end
-
-sbar.add("bracket", "spaces", members, {
-  background = {
-    drawing = true,
-    color = colors.surface,
-    border_color = colors.border,
-    border_width = 1,
-    height = 28,
-    corner_radius = 9,
-  },
-})
 
 local observer = sbar.add("item", "space.observer", {
   drawing = false,
   updates = true,
+  update_freq = 30,
 })
 
 observer:subscribe("aerospace_workspace_change", function(env)
   select_workspace(env.FOCUSED_WORKSPACE)
 end)
 
-observer:subscribe("forced", function()
-  sbar.exec("aerospace list-workspaces --focused", function(output)
-    select_workspace(output)
+observer:subscribe({ "forced", "routine", "system_woke" }, function()
+  sbar.exec("aerospace list-workspaces --focused 2>/dev/null", function(output, exit_code)
+    select_workspace(exit_code == 0 and output or "")
   end)
 end)
