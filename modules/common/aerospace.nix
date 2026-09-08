@@ -2,6 +2,7 @@
   programs.aerospace = {
     enable = true;
     launchd.enable = true;
+    settings."config-version" = 2;
     settings."exec-on-workspace-change" = [
       "/bin/bash"
       "-c"

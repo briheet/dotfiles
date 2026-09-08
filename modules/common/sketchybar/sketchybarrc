@@ -1,0 +1,14 @@
+#!/usr/bin/env lua
+
+sbar = require("sketchybar")
+
+-- Send startup configuration as one message. Event callbacks remain in this
+-- process, avoiding a new shell for every workspace or system event.
+sbar.begin_config()
+require("bar")
+require("defaults")
+require("items")
+sbar.hotload(true)
+sbar.end_config()
+
+sbar.event_loop()
