@@ -44,11 +44,11 @@ in
         alt-shift-l = [ "join-with right" "mode main" ];
       };
     };
-    # Reserve the 36-point SketchyBar plus 6 points of breathing room.
+    # Reserve only the 36-point SketchyBar, without extra space below it.
     # The MacBook's notch already reserves the bar's height on its display.
     settings.gaps.outer.top = [
-      { monitor."^built-in retina display$" = 6; }
-      42
+      { monitor."^built-in retina display$" = 0; }
+      36
     ];
     settings."exec-on-workspace-change" = [
       "/bin/bash"

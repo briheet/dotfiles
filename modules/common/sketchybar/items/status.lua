@@ -63,7 +63,9 @@ local function update_battery()
       return
     end
 
-    local charging = (info or ""):find("AC Power", 1, true) ~= nil
+    -- AC power also covers a full battery and charging paused by macOS.
+    local state = helpers.trim((info or ""):match("%d+%%;%s*([^;]+)") or "")
+    local charging = state == "charging"
     local icon = icons.battery.empty
     local color = colors.nord11
 
@@ -99,6 +101,7 @@ end)
 
 local volume = sbar.add("item", "status.volume", {
   position = "right",
+  update_freq = 30,
   icon = {
     string = icons.volume.medium,
     color = colors.nord7,
@@ -111,10 +114,17 @@ local volume = sbar.add("item", "status.volume", {
   },
 })
 
-local function set_volume(value)
-  local level = tonumber(value) or 0
+local function set_volume(info, code)
+  local level = tonumber((info or ""):match("output volume:%s*(%d+)"))
+  local muted = (info or ""):match("output muted:%s*(%a+)")
+  if code ~= 0 or not level or not muted then
+    volume:set({ label = { string = "--" } })
+    return
+  end
   local icon = icons.volume.muted
-  if level >= 60 then
+  if muted == "true" then
+    icon = icons.volume.muted
+  elseif level >= 60 then
     icon = icons.volume.high
   elseif level >= 30 then
     icon = icons.volume.medium
@@ -124,18 +134,16 @@ local function set_volume(value)
 
   volume:set({
     icon = { string = icon },
-    label = { string = tostring(math.floor(level)) .. "%" },
+    label = { string = muted == "true" and "Muted" or tostring(level) .. "%" },
   })
 end
 
-volume:subscribe("volume_change", function(env)
-  set_volume(env.INFO)
-end)
-volume:subscribe("forced", function()
-  sbar.exec("osascript -e 'output volume of (get volume settings)'", set_volume)
-end)
+local function update_volume()
+  sbar.exec("/usr/bin/osascript -e 'get volume settings'", set_volume)
+end
+volume:subscribe({ "volume_change", "routine", "forced", "system_woke" }, update_volume)
 volume:subscribe("mouse.clicked", function()
-  sbar.exec("osascript -e 'set volume output muted not (output muted of (get volume settings))'")
+  sbar.exec("/usr/bin/osascript -e 'set volume output muted not (output muted of (get volume settings))'", update_volume)
 end)
 
 local network = sbar.add("item", "status.network", {
@@ -149,17 +157,54 @@ local network = sbar.add("item", "status.network", {
 })
 
 local function update_network()
-  sbar.exec("ipconfig getifaddr en0", function(address, exit_code)
-    local connected = exit_code == 0 and helpers.trim(address) ~= ""
+  local function show_network(label, connected)
     network:set({
       icon = {
         string = connected and icons.wifi.connected or icons.wifi.disconnected,
         color = connected and colors.nord9 or colors.nord11,
       },
-      label = { string = connected and "Wi-Fi" or "Wi-Fi off" },
+      label = { string = label },
     })
+  end
+
+  sbar.exec("/usr/sbin/networksetup -listallhardwareports", function(ports, code)
+    if code ~= 0 then
+      show_network("Wi-Fi ?", false)
+      return
+    end
+    local device
+    for port, name in (ports or ""):gmatch("Hardware Port: ([^\n]+)\nDevice: ([^\n]+)") do
+      if helpers.trim(port) == "Wi-Fi" or helpers.trim(port) == "AirPort" then
+        device = helpers.trim(name)
+        break
+      end
+    end
+    -- Validate before including the discovered interface in a shell command.
+    if not device or not device:match("^en%d+$") then
+      show_network("No Wi-Fi", false)
+      return
+    end
+    sbar.exec("/usr/sbin/networksetup -getairportpower " .. device
+      .. " && /sbin/ifconfig " .. device, function(info, exit_code)
+      local power = (info or ""):match("Wi%-Fi Power %([^)]*%):%s*(%a+)")
+        or (info or ""):match("AirPort Power %([^)]*%):%s*(%a+)")
+      if exit_code ~= 0 or not power then
+        show_network("Wi-Fi ?", false)
+      elseif power == "Off" then
+        show_network("Wi-Fi off", false)
+      else
+        -- Link state works before DHCP completes and on IPv6-only networks.
+        local connected = (info or ""):match("status:%s*(%a+)") == "active"
+        show_network(connected and "Wi-Fi" or "Wi-Fi disconnected", connected)
+      end
+    end)
   end)
 end
+
+update_clock()
+update_battery()
+update_volume()
+update_network()
 
 network:subscribe({ "routine", "wifi_change", "system_woke", "forced" }, update_network)
 network:subscribe("mouse.clicked", function()
