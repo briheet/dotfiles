@@ -4,6 +4,7 @@
     ../../modules/common/nushell.nix
     ../../modules/common/starship.nix
     ../../modules/common/tools.nix
+    ../../modules/common/lazygit.nix
     ../../modules/common/yazi.nix
     ../../modules/common/helix.nix
     ../../modules/common/tmux.nix

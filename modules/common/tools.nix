@@ -25,7 +25,6 @@
     nodejs
     docker
     docker-compose
-    lazygit
     ripgrep
     ranger
     tree

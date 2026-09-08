@@ -2,6 +2,8 @@
   programs.nushell = {
     enable = true;
     extraEnv = ''
+      $env.EDITOR = "hx"
+      $env.VISUAL = "hx"
       $env.PATH = (
         $env.PATH
         | prepend "${config.home.homeDirectory}/.local/bin"
@@ -12,6 +14,8 @@
     '';
 
     extraConfig = ''
+      $env.config.buffer_editor = "hx"
+
       let nord0 = "#2e3440"
       let nord2 = "#434c5e"
       let nord3 = "#4c566a"
