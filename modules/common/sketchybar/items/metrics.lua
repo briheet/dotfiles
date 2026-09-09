@@ -5,12 +5,12 @@ local function metric(name, title, frequency)
   local item = sbar.add("item", "metrics." .. name, {
     position = "right",
     update_freq = frequency,
-    padding_left = 5,
-    padding_right = 5,
+    padding_left = 3,
+    padding_right = 3,
     icon = {
       string = title,
       color = colors.nord9,
-      font = { family = settings.label_font, style = "Semibold", size = 13.0 },
+      font = { family = settings.label_font, style = "Semibold", size = 11.0 },
     },
     label = { string = "--", width = "dynamic", align = "left", color = colors.text_muted },
   })

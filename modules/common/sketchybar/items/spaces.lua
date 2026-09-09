@@ -30,20 +30,20 @@ for index = 1, 9 do
   local name = "space." .. sid
   local item = sbar.add("item", name, {
     position = "left",
-    width = 30,
-    padding_left = 3,
-    padding_right = 3,
+    width = 25,
+    padding_left = 1,
+    padding_right = 1,
     icon = { drawing = false },
     label = {
       string = sid,
       align = "center",
-      width = 30,
+      width = 25,
       padding_left = 0,
       padding_right = 0,
       font = {
         family = settings.label_font,
         style = "Bold",
-        size = 13.0,
+        size = 11.0,
       },
       color = colors.text_muted,
     },

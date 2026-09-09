@@ -14,7 +14,7 @@ local clock = sbar.add("item", "status.clock", {
     font = {
       family = settings.label_font,
       style = "Medium",
-      size = 13.0,
+      size = 11.0,
     },
   },
   label = {
@@ -23,7 +23,7 @@ local clock = sbar.add("item", "status.clock", {
     font = {
       family = settings.label_font,
       style = "Bold",
-      size = 13.0,
+      size = 11.0,
     },
   },
 })
@@ -214,20 +214,20 @@ end)
 -- Use the same spacing and baseline for each status icon/value pair.
 for _, item in ipairs({ network, volume, battery }) do
   item:set({
-    padding_left = 5,
-    padding_right = 5,
+    padding_left = 3,
+    padding_right = 3,
     icon = {
-      font = { family = settings.font, style = "Regular", size = 14.0 },
+      font = { family = settings.font, style = "Regular", size = 12.0 },
       y_offset = 0,
-      padding_left = 5,
-      padding_right = 4,
+      padding_left = 3,
+      padding_right = 2,
       width = "dynamic",
     },
     label = {
-      font = { family = settings.label_font, style = "Medium", size = 13.0 },
+      font = { family = settings.label_font, style = "Medium", size = 11.0 },
       y_offset = 0,
-      padding_left = 3,
-      padding_right = 5,
+      padding_left = 2,
+      padding_right = 3,
       width = "dynamic",
       align = "left",
     },
