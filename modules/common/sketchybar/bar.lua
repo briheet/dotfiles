@@ -8,6 +8,7 @@ sbar.bar({
   color = colors.transparent,
   border_width = 0,
   shadow = false,
+  font_smoothing = true,
   sticky = true,
   topmost = "window",
   padding_left = 16,

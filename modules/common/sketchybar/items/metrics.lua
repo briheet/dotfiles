@@ -11,6 +11,7 @@ local function metric(name, title, frequency)
       string = title,
       color = colors.nord9,
       font = { family = settings.label_font, style = "Semibold", size = 11.0 },
+      y_offset = settings.label_y_offset,
     },
     label = { string = "--", width = "dynamic", align = "left", color = colors.text_muted },
   })

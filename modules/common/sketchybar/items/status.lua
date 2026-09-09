@@ -11,6 +11,7 @@ local clock = sbar.add("item", "status.clock", {
   icon = {
     string = "",
     color = colors.text_muted,
+    y_offset = settings.label_y_offset,
     font = {
       family = settings.label_font,
       style = "Medium",
@@ -218,14 +219,14 @@ for _, item in ipairs({ network, volume, battery }) do
     padding_right = 3,
     icon = {
       font = { family = settings.font, style = "Regular", size = 12.0 },
-      y_offset = 0,
+      y_offset = settings.icon_y_offset,
       padding_left = 3,
       padding_right = 2,
       width = "dynamic",
     },
     label = {
       font = { family = settings.label_font, style = "Medium", size = 11.0 },
-      y_offset = 0,
+      y_offset = settings.label_y_offset,
       padding_left = 2,
       padding_right = 3,
       width = "dynamic",
