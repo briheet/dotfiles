@@ -1,11 +1,8 @@
 { pkgs, lib, ... }:
 
 let
-  # ElixirLS must run on the same Elixir/OTP pair as the projects it indexes.
-  # The default package currently embeds Elixir 1.18, while our work projects
-  # use Elixir 1.19 on OTP 28.
-  elixir = pkgs.beam.packages.erlang_28.elixir_1_19;
-  elixirLs = pkgs.elixir-ls.override { inherit elixir; };
+  # Our work projects use Elixir 1.20 on OTP 28.
+  elixir = pkgs.beam.packages.erlang_28.elixir_1_20;
 
   prettierFormatter = parser: {
     command = "prettier";
@@ -72,7 +69,7 @@ in
 
     # Elixir
     elixir
-    elixirLs
+    dexter
 
     # Python
     python313
@@ -94,6 +91,7 @@ in
 
     settings = {
       theme = "nord";
+      keys.normal.space.F = "file_picker_in_current_buffer_directory";
       editor = {
         line-number = "relative";
         lsp.display-messages = true;
@@ -106,6 +104,18 @@ in
     };
 
     languages.language = [
+      {
+        name = "elixir";
+        language-servers = [ "dexter" ];
+      }
+      {
+        name = "heex";
+        language-servers = [ "dexter" ];
+      }
+      {
+        name = "eex";
+        language-servers = [ "dexter" ];
+      }
       {
         name = "zig";
         roots = [
@@ -281,15 +291,10 @@ in
       ];
     };
 
-    # ElixirLS may be busy compiling native dependencies on its initial build.
-    # Give navigation requests enough time to complete and avoid dependency
-    # fetching races between the editor and the project's Mix workflow.
-    languages.language-server.elixir-ls = {
-      timeout = 120;
-      config.elixirLS = {
-        dialyzerEnabled = false;
-        fetchDeps = false;
-      };
+    # Dexter indexes source directly, without waiting for a Mix build.
+    languages.language-server.dexter = {
+      command = lib.getExe pkgs.dexter;
+      args = [ "lsp" ];
     };
 
     languages.language-server.zls = {
