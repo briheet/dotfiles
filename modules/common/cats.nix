@@ -9,15 +9,16 @@
       enable = true;
       position = "top-right";
       margin = 24;
+      opacity = 0.9;
       large.enable = true;
       medium.enable = true;
       small.enable = true;
-      small.variants = [ "spend" ];
-      medium.variants = [ "providers" ];
+      small.variants = [ "spend" "agents" "burn-rate" ];
+      medium.variants = [ "providers" "agents" ];
       font = {
         package = pkgs.nerd-fonts.jetbrains-mono;
         family = "JetBrainsMono Nerd Font";
-        size = 12;
+        size = 11;
       };
     };
     settings = {

@@ -88,9 +88,14 @@ in
   programs.helix = {
     enable = true;
     defaultEditor = true;
+    # Keep Nord's palette; let Ghostty's existing transparency show through.
+    themes.nord-transparent = {
+      inherits = "nord";
+      "ui.background" = { };
+    };
 
     settings = {
-      theme = "nord";
+      theme = "nord-transparent";
       keys.normal.space.F = "file_picker_in_current_buffer_directory";
       editor = {
         line-number = "relative";

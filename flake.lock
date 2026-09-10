@@ -44,11 +44,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789013318,
-        "narHash": "sha256-oqU28qa0ZmHVITxDPyBhJs//poNZTck5mBSp1U2lRnw=",
+        "lastModified": 1789017230,
+        "narHash": "sha256-8fkv2WVMVnc0LFXBQifsmsDrMW1CBYRKZCErzMH9XJk=",
         "owner": "briheet",
         "repo": "cats",
-        "rev": "5ae79e00ee0265639f805b60c8c603cdd4976f9b",
+        "rev": "ca860d67e1f8ae3b71884c2a5bfc52208507d95d",
         "type": "github"
       },
       "original": {
