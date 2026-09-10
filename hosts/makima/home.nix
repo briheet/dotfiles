@@ -1,5 +1,6 @@
 { ... }: {
   imports = [
+    ../../modules/common/cats.nix
     ../../modules/common/nushell.nix
     ../../modules/common/starship.nix
     ../../modules/common/tools.nix

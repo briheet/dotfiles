@@ -34,6 +34,29 @@
         "type": "github"
       }
     },
+    "cats": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789013318,
+        "narHash": "sha256-oqU28qa0ZmHVITxDPyBhJs//poNZTck5mBSp1U2lRnw=",
+        "owner": "briheet",
+        "repo": "cats",
+        "rev": "5ae79e00ee0265639f805b60c8c603cdd4976f9b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "briheet",
+        "repo": "cats",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -171,6 +194,7 @@
     },
     "root": {
       "inputs": {
+        "cats": "cats",
         "darwin": "darwin",
         "disko": "disko",
         "home-manager": "home-manager",

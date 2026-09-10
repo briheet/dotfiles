@@ -11,6 +11,8 @@
       # macos-titlebar-style = "hidden";
       cursor-style-blink = false;
 
+      background-opacity = 0.9;
+
       # clipboard stuff
       confirm-close-surface = false;
       copy-on-select = "clipboard";
